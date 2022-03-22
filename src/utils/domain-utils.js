@@ -16,7 +16,7 @@ const isProduction = () => {
  * @returns {string}
  */
 const getDomain = () => {
-    const prodUrl = 'https://FIX.ME'; // TODO
+    const prodUrl = 'https://ase-fs22-codingkittens-client.herokuapp.com/';
     const devUrl = 'http://localhost:8080/';
 
     return isProduction() ? prodUrl : devUrl;
