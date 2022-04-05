@@ -2,9 +2,13 @@ language: node_js
 node_js:
   - 16
 
-# sudo: required
 # services:
 #   - docker
 
+addons:
+  sonarcloud:
+    organization: "thecodingkittens"
+
 script:
   - npm test
+  - sonar-scanner
