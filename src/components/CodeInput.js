@@ -37,7 +37,7 @@ const CodeInput = props => {
                     sendCurrentCode();
                     e.preventDefault();
                 }
-                console.log(e.code);
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
             }}
             InputProps={{
                 endAdornment:

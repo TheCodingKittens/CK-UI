@@ -34,11 +34,17 @@ const App = () => {
         mainCard: css`
           width: 80%;
           flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+        `,
+        mainCardContent: css`
+            flex-grow: 1;
         `,
         inputCard: css`
           margin-top: 1em;
           width: 80%;
           border: none;
+          flex-shrink: 0;
         `,
     };
     return (
@@ -50,7 +56,7 @@ const App = () => {
                     </Typography>
                 </CardContent>
                 <Divider/>
-                <CardContent>
+                <CardContent sx={styles.mainCardContent} id="code-display">
                     <CodeDisplay/>
                 </CardContent>
             </Card>
