@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Canvas} from "reaflow";
 import {Box, useTheme} from "@mui/material";
 import {css} from "@emotion/react";
+import {generateFakeEdges, parseCommandsToNodes} from "../utils/node-utils";
 
 const CodeDisplay = props => {
     const theme = useTheme();
@@ -14,8 +15,8 @@ const CodeDisplay = props => {
     };
     const [maxHeight, setMaxHeight] = useState(500);
     const [maxWidth, setMaxWidth] = useState(500);
-    const nodes = [];
-    const edges = [];
+    const nodes = parseCommandsToNodes(props.commands.nodes);
+    const edges = generateFakeEdges(nodes);
 
     useEffect(() => {
         getDimensions();

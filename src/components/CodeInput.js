@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {Icon, IconButton, InputAdornment, TextField, useTheme} from "@mui/material";
 import {css} from "@emotion/react";
-import {api} from "../utils/api";
 
 const CodeInput = props => {
     const theme = useTheme();
@@ -17,7 +16,10 @@ const CodeInput = props => {
     const sendCurrentCode = async () => {
         setWaiting(true);
         try {
-            const result = await api.post('/command', {command: currentInput});
+            // const result = await api.post('/command', {command: currentInput});
+            if (props.onSend) {
+                await props.onSend(currentInput);
+            }
             setCurrentInput("");
         }
         catch (error) {
@@ -55,6 +57,8 @@ const CodeInput = props => {
     );
 };
 
-CodeInput.propTypes = {};
+CodeInput.propTypes = {
+    onSend: PropTypes.func
+};
 
 export default CodeInput;

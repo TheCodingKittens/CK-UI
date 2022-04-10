@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {css} from "@emotion/react";
 import {
     Box,
@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import CodeDisplay from "./components/CodeDisplay";
 import CodeInput from "./components/CodeInput";
+import {api} from "./utils/api";
 
 
 const App = () => {
@@ -38,7 +39,7 @@ const App = () => {
           flex-direction: column;
         `,
         mainCardContent: css`
-            flex-grow: 1;
+          flex-grow: 1;
         `,
         inputCard: css`
           margin-top: 1em;
@@ -47,6 +48,18 @@ const App = () => {
           flex-shrink: 0;
         `,
     };
+    const [commands, setCommands] = useState([]);
+
+    const sendCommand = async input => {
+        let res = await api.post('/command', {command: input});
+        if (res.status === 200) { // TODO: update to 201
+            res = await api.get('/history');
+            if (res.status === 200) {
+                setCommands(res.data);
+            }
+        }
+    };
+
     return (
         <Box sx={styles.appContainer}>
             <Card variant="outlined" sx={styles.mainCard}>
@@ -57,11 +70,11 @@ const App = () => {
                 </CardContent>
                 <Divider/>
                 <CardContent sx={styles.mainCardContent} id="code-display">
-                    <CodeDisplay/>
+                    <CodeDisplay commands={commands}/>
                 </CardContent>
             </Card>
             <Card variant="outlined" sx={styles.inputCard}>
-                <CodeInput/>
+                <CodeInput onSend={sendCommand}/>
             </Card>
         </Box>
     );
