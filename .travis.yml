@@ -2,10 +2,6 @@ language: node_js
 node_js:
   - 16
 
-env:
-  global:
-    - COVERALLS_PARALLEL=true
-
 # services:
 #   - docker
 
@@ -19,8 +15,5 @@ addons:
 
 script:
   # - docker exec -i travis npm test
-  - npm test
+  - npm run test:coveralls
   - sonar-scanner
-
-after_success:
-  - coveralls
