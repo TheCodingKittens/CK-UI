@@ -2,17 +2,18 @@ language: node_js
 node_js:
   - 16
 
-services:
-  - docker
+# services:
+#   - docker
 
 addons:
   sonarcloud:
     organization: "thecodingkittens"
 
-before_install:
-  - docker build -t image .
-  - docker run -it --rm -v /app/node_modules -p 3001:3000 -e CHOKIDAR_USEPOLLING=true --name travis image
+# before_install:
+#   - docker build -t image .
+#   - docker run -it --rm -v /app/node_modules -p 3001:3000 -e CHOKIDAR_USEPOLLING=true --name travis image
 
 script:
-  - docker exec -i travis npm test
+  # - docker exec -i travis npm test
+  - npm test
   - sonar-scanner
