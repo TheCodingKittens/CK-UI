@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {Icon, IconButton, InputAdornment, TextField, useTheme} from "@mui/material";
+import {Icon, IconButton, Paper, useTheme} from "@mui/material";
 import {css} from "@emotion/react";
+import CodeEditor from '@uiw/react-textarea-code-editor';
 
 const CodeInput = props => {
     const theme = useTheme();
@@ -21,39 +22,38 @@ const CodeInput = props => {
                 await props.onSend(currentInput);
             }
             setCurrentInput("");
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Failed to send command to backend!", error);
         }
         setWaiting(false);
     };
 
     return (
-        <TextField
-            fullWidth multiline
-            value={currentInput}
-            disabled={waiting}
-            onChange={e => setCurrentInput(e.target.value)}
-            onKeyUp={e => {
-                if (e.ctrlKey && e.code === 'Enter') {
-                    sendCurrentCode();
-                    e.preventDefault();
-                }
-                setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
-            }}
-            InputProps={{
-                endAdornment:
-                    <InputAdornment position="end">
-                        <IconButton
-                            disabled={currentInput.length < 1}
-                            onClick={() => sendCurrentCode()}
-                        >
-                            <Icon>send</Icon>
-                        </IconButton>
-                    </InputAdornment>,
-                sx: styles.codeInput
-            }}
-        />
+        <Paper variant="outlined" sx={{
+            display: "flex",
+            background: theme.palette.background.default
+        }}>
+            <CodeEditor
+                language="python"
+                placeholder="Enter your code here..."
+                style={{flexGrow: "1", background: theme.palette.background.default}}
+                value={currentInput}
+                onChange={e => setCurrentInput(e.target.value)}
+                onKeyDown={e => {
+                    if (e.ctrlKey && e.code === 'Enter') {
+                        sendCurrentCode();
+                        e.preventDefault();
+                    }
+                    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+                }}
+            />
+            <IconButton
+                disabled={currentInput.length < 1}
+                onClick={() => sendCurrentCode()}
+            >
+                <Icon>send</Icon>
+            </IconButton>
+        </Paper>
     );
 };
 
