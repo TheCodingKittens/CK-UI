@@ -1,12 +1,14 @@
-
 const parseCommandsToNodes = commands => {
     let parsed = [];
     if (commands) {
         parsed = commands.map(cmd => {
             return {
                 id: cmd.pk,
-                text: cmd.command,
+                // text: cmd.command,
+                width: cmd.command.length * 11 + 20,
+                height: 50,
                 data: {
+                    command: cmd,
                     type: 'command' // TODO: update once backend sends the types
                 }
             };
@@ -23,11 +25,33 @@ const parseEdges = edges => {
     return parsed;
 };
 
+const getNodeStyle = (data, theme) => {
+    let style;
+    switch (data.type) {
+        case 'command':
+        default:
+            style = {
+                backgroundColor: theme.palette.primary.dark
+            };
+            break;
+
+    }
+    return {
+        ...style,
+        width: '100%',
+        height: '100%',
+        cursor: 'pointer',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    };
+};
+
 const generateFakeEdges = nodes => {
     let edges = [];
     for (let i = 0; i < nodes.length - 1; i++) {
         let from = nodes[i].id;
-        let to = nodes[i+1].id;
+        let to = nodes[i + 1].id;
         edges.push({
             id: `${from}-${to}`,
             from, to
@@ -40,5 +64,6 @@ const generateFakeEdges = nodes => {
 export {
     parseCommandsToNodes,
     parseEdges,
+    getNodeStyle,
     generateFakeEdges
 }

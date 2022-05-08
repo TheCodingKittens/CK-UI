@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
 import {
     Box,
@@ -40,6 +40,7 @@ const App = () => {
         `,
         mainCardContent: css`
           flex-grow: 1;
+          padding: 0
         `,
         inputCard: css`
           margin-top: 1em;
@@ -49,6 +50,15 @@ const App = () => {
         `,
     };
     const [commands, setCommands] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            let res = await api.get('/history');
+            if (res.status === 200) {
+                setCommands(res.data);
+            }
+        })();
+    }, []);
 
     const sendCommand = async input => {
         let res = await api.post('/command', {command: input});
@@ -62,8 +72,8 @@ const App = () => {
 
     return (
         <Box sx={styles.appContainer}>
-            <Card variant="outlined" sx={styles.mainCard}>
-                <CardContent>
+            <Card variant="outlined" sx={styles.mainCard} id="display-card">
+                <CardContent id="display-header">
                     <Typography variant="h2" sx={styles.appTitle}>
                         codeMeow.
                     </Typography>
