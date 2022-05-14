@@ -9,12 +9,19 @@ import {
     DialogContent,
     DialogTitle,
     Paper,
-    Typography,
     useTheme
 } from "@mui/material";
 import {css} from "@emotion/react";
-import {generateFakeEdges, getNodeStyle, parseCommandsToNodes} from "../utils/node-utils";
+import {
+    parseCommandsToNodes,
+    parseEdges
+} from "../utils/node-utils";
 import CodeEditor from "@uiw/react-textarea-code-editor";
+import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
+import py from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
+import onedark from 'react-syntax-highlighter/dist/esm/styles/hljs/atom-one-dark';
+
+SyntaxHighlighter.registerLanguage('python', py);
 
 const CodeDisplay = props => {
     const theme = useTheme();
@@ -22,14 +29,23 @@ const CodeDisplay = props => {
         displayContainer: css`
           max-width: 100%;
           max-height: 100%;
+          overflow-x: hidden;
+        `,
+        nodeContainer: css`
+          width: calc(100% - 2px);
+          height: calc(100% - 2px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
         `
     };
     const [maxHeight, setMaxHeight] = useState(500);
     const [maxWidth, setMaxWidth] = useState(500);
+    const [layoutHeight, setLayoutHeight] = useState('100%');
     const [editNode, setEditNode] = useState(null);
     const [newCommand, setNewCommand] = useState('');
-    const nodes = parseCommandsToNodes(props.commands.nodes);
-    const edges = generateFakeEdges(nodes);
+    const nodes = parseCommandsToNodes(props.commands, theme);
+    let edges = parseEdges(props.commands);
 
     useEffect(() => {
         getDimensions();
@@ -56,49 +72,68 @@ const CodeDisplay = props => {
     };
 
     const handleEditClose = (save) => {
+        if (save && props.onEdit) {
+            props.onEdit(editNode, newCommand);
+        }
         setEditNode(null);
         setNewCommand(null);
     };
 
+    const handleLayoutChange = (layout) => {
+        setLayoutHeight(layout.height);
+    };
+
+    const handleNodeRender = e => {
+        console.log(e);
+
+        let content = e.node.data.command;
+
+        switch (e.node.type) {
+            case "Line":
+            case "If.test":
+                content = (
+                    <SyntaxHighlighter
+                        language="python"
+                        style={onedark}
+                        customStyle={{backgroundColor: 'transparent'}}
+                    >
+                        {e.node.data.command}
+                    </SyntaxHighlighter>
+                );
+                break;
+        }
+
+        return (
+            <foreignObject height={e.height} width={e.width} x={0} y={0}>
+                <Paper variant="outlined" sx={styles.nodeContainer}>
+                    {content}
+                </Paper>
+            </foreignObject>
+        );
+    };
+
     return (
-        <Box sx={styles.displayContainer}>
-            <Canvas fit={true} zoomable pannable readonly
-                    maxHeight={maxHeight} maxWidth={maxWidth}
+        <Box sx={styles.displayContainer} style={{width: maxWidth, height: maxHeight}}>
+            <Canvas fit={false} zoomable={false} pannable={false} readonly
+                    defaultPosition="top"
+                    height={layoutHeight}
+                    maxWidth={maxWidth}
                     nodes={nodes}
                     edges={edges}
+                    onLayoutChange={l => handleLayoutChange(l)}
                     node={(node) => (
                         <Node
                             {...node}
+                            offsetX={Math.random() * 100}
                             onClick={() => console.log(node.properties.data)}
                             style={{
                                 fill: 'transparent',
                                 stroke: 'none',
+                                overflow: 'visible',
                                 fontFamily: theme.typography.fontFamily
                             }}
                         >
-                            {event => (
-                                <foreignObject height={event.height} width={event.width} x={0} y={0}
-                                               style={{zIndex: -1}}>
-                                    <Paper
-                                        sx={getNodeStyle(node.properties.data, theme)}
-                                        onClick={(e) => handleNodeClick(e, node.properties.data)}
-                                    >
-                                        {/*<SyntaxHighlighter*/}
-                                        {/*    language="python"*/}
-                                        {/*    style={tomorrowNight}*/}
-                                        {/*    customStyle={{*/}
-                                        {/*        backgroundColor: 'transparent'*/}
-                                        {/*    }}*/}
-                                        {/*>*/}
-                                        {/*    {node.properties.data.command.command}*/}
-                                        {/*</SyntaxHighlighter>*/}
-                                        <Typography
-                                            sx={{fontFamily: 'Source Code Pro, sans-serif', textAlign: 'center'}}>
-                                            {node.properties.data.command.command}
-                                        </Typography>
-                                    </Paper>
-                                </foreignObject>
-                            )}
+                            {event => handleNodeRender(event)}
                         </Node>
                     )}
                     arrow={<MarkerArrow style={{fill: theme.palette.text.primary}}/>}

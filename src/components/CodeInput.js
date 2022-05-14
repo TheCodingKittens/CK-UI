@@ -39,6 +39,7 @@ const CodeInput = props => {
                 style={{flexGrow: "1", background: theme.palette.background.default}}
                 value={currentInput}
                 onChange={e => setCurrentInput(e.target.value)}
+                disabled={waiting}
                 onKeyDown={e => {
                     if (e.ctrlKey && e.code === 'Enter') {
                         sendCurrentCode();

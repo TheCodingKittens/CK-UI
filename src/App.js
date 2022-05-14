@@ -61,13 +61,24 @@ const App = () => {
     }, []);
 
     const sendCommand = async input => {
-        let res = await api.post('/command', {command: input});
+        let res = await api.post('/command', {command: btoa(input)});
         if (res.status === 200) { // TODO: update to 201
             res = await api.get('/history');
             if (res.status === 200) {
                 setCommands(res.data);
             }
         }
+    };
+
+    const editCommand = async input => {
+        // TODO: send edit command request
+        // let res = await api.post('/command', {command: btoa(input)});
+        // if (res.status === 200) { // TODO: update to 201
+        //     res = await api.get('/history');
+        //     if (res.status === 200) {
+        //         setCommands(res.data);
+        //     }
+        // }
     };
 
     return (
@@ -80,7 +91,7 @@ const App = () => {
                 </CardContent>
                 <Divider/>
                 <CardContent sx={styles.mainCardContent} id="code-display">
-                    <CodeDisplay commands={commands}/>
+                    <CodeDisplay commands={commands} onEdit={editCommand}/>
                 </CardContent>
             </Card>
             <Card variant="outlined" sx={styles.inputCard}>
