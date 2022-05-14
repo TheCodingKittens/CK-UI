@@ -1,12 +1,13 @@
 import {Light as SyntaxHighlighter} from "react-syntax-highlighter";
 import oneDark from "react-syntax-highlighter/dist/cjs/styles/hljs/atom-one-dark";
-import {Avatar, Box, Chip, Divider, Paper, TextField, Typography} from "@mui/material";
+import {Box, Divider, Paper, Typography} from "@mui/material";
 import React from "react";
 import {css} from "@emotion/react";
 import VarChip from "../components/VarChip";
+import {scrollbar} from "./css-mixins";
 
 // this method picks and chooses how each node looks!
-const handleNodeRender = (e, theme) => {
+const handleNodeRender = (e, theme, onVarsClick) => {
     const styles = {
         displayContainer: css`
           max-width: 100%;
@@ -19,10 +20,12 @@ const handleNodeRender = (e, theme) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          cursor: pointer;
         `,
         nodeHeader: css`
           align-self: flex-start;
           width: 100%;
+          cursor: default;
         `,
         outputContainer: css`
           height: calc(100% - 4px);
@@ -34,6 +37,7 @@ const handleNodeRender = (e, theme) => {
           border-right: 0;
           border-bottom: 0;
           border-top: 0;
+          cursor: default;
         `,
         outputBox: css`
           padding: 1em;
@@ -45,9 +49,16 @@ const handleNodeRender = (e, theme) => {
           left: 2px;
           width: calc(100% - 250px - 4px);
           height: 150px;
+          display: flex;
+          flex-direction: column;
+          cursor: default;
         `,
-        varChip: css`
-          margin: 0.5em;
+        varChipBox: css`
+          width: 100%;
+          flex-grow: 1;
+          overflow: auto;
+          cursor: pointer;
+          ${scrollbar(theme)}
         `
     };
 
@@ -114,8 +125,8 @@ const handleNodeRender = (e, theme) => {
                         </Typography>
                         <Divider/>
                         {/*TODO: handle scroll*/}
-                        <Box>
-                            {generateVarChips(e.node.data.vars, styles, theme)}
+                        <Box sx={styles.varChipBox} onClick={() => onVarsClick(e.node)}>
+                            {generateVarChips(e.node.data.vars)}
                         </Box>
                     </Box>
                 </>
@@ -132,7 +143,7 @@ const handleNodeRender = (e, theme) => {
     );
 };
 
-const generateVarChips = (vars, styles, theme) => {
+const generateVarChips = (vars) => {
     let chips = [];
     for (let v in vars) {
         chips.push(
@@ -144,5 +155,6 @@ const generateVarChips = (vars, styles, theme) => {
 };
 
 export {
-    handleNodeRender
+    handleNodeRender,
+    generateVarChips
 }

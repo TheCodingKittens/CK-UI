@@ -47,8 +47,8 @@ const VarChip = props => {
     };
     return (
         <Box sx={styles.varChipContainer}>
-            <Box sx={styles.varChipName}>long_name</Box>
-            <Box sx={styles.varChipValue}>long_value</Box>
+            <Box sx={styles.varChipName}>{props.name}</Box>
+            <Box sx={styles.varChipValue}>{props.value}</Box>
         </Box>
     );
 };

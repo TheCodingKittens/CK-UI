@@ -21,6 +21,7 @@ import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
 import py from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
 import {handleNodeRender} from "../utils/render-utils";
 import {scrollbar} from "../utils/css-mixins";
+import VarsDialog from "./VarsDialog";
 
 SyntaxHighlighter.registerLanguage('python', py);
 
@@ -38,6 +39,7 @@ const CodeDisplay = props => {
     const [maxWidth, setMaxWidth] = useState(500);
     const [layoutHeight, setLayoutHeight] = useState('100%');
     const [editNode, setEditNode] = useState(null);
+    const [detailsNode, setDetailsNode] = useState(null);
     const [newCommand, setNewCommand] = useState('');
     const nodes = parseCommandsToNodes(props.commands, theme);
     let edges = parseEdges(props.commands);
@@ -78,6 +80,10 @@ const CodeDisplay = props => {
         setLayoutHeight(layout.height);
     };
 
+    const handleVarsClick = (node) => {
+        setDetailsNode(node);
+    };
+
     return (
         <Box sx={styles.displayContainer} style={{width: maxWidth, height: maxHeight}}>
             <Canvas fit={false} zoomable={true} pannable={false} readonly
@@ -99,7 +105,7 @@ const CodeDisplay = props => {
                                 fontFamily: theme.typography.fontFamily
                             }}
                         >
-                            {event => handleNodeRender(event, theme)}
+                            {event => handleNodeRender(event, theme, handleVarsClick)}
                         </Node>
                     )}
                     arrow={<MarkerArrow style={{fill: theme.palette.text.primary}}/>}
@@ -132,6 +138,11 @@ const CodeDisplay = props => {
                     <Button onClick={() => handleEditClose(true)}>Save</Button>
                 </DialogActions>
             </Dialog>
+            <VarsDialog
+                open={!!detailsNode}
+                onClose={() => setDetailsNode(null)}
+                node={detailsNode}
+            />
         </Box>
     );
 };
