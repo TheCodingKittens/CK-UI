@@ -20,22 +20,9 @@ const parseCommandsToNodes = (commands, theme) => {
                     vars: wrapper.vars
                 }
             };
-            // TODO: vars, output
             parsed.push(wrapperNode);
             parsed = parsed.concat(parseInnerCommands(wrapper.commands, wrapper.id, theme));
         }
-        // parsed = commands.map(cmd => {
-        //     return {
-        //         id: cmd.pk,
-        //         // text: cmd.command,
-        //         width: cmd.command.length * 11 + 20,
-        //         height: 50,
-        //         data: {
-        //             command: cmd,
-        //             type: 'command' // TODO: update once backend sends the types
-        //         }
-        //     };
-        // });
     }
     return parsed;
 };

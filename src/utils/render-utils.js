@@ -3,6 +3,7 @@ import oneDark from "react-syntax-highlighter/dist/cjs/styles/hljs/atom-one-dark
 import {Avatar, Box, Chip, Divider, Paper, TextField, Typography} from "@mui/material";
 import React from "react";
 import {css} from "@emotion/react";
+import VarChip from "../components/VarChip";
 
 // this method picks and chooses how each node looks!
 const handleNodeRender = (e, theme) => {
@@ -96,7 +97,7 @@ const handleNodeRender = (e, theme) => {
                 <>
                     {showOutput &&
                     <Paper variant="outlined" sx={styles.outputContainer}>
-                        <Typography color="primary" style={{marginLeft: '0.5em'}}>
+                        <Typography color="primary.light" style={{marginLeft: '0.5em'}}>
                             output
                         </Typography>
                         <Divider/>
@@ -108,7 +109,7 @@ const handleNodeRender = (e, theme) => {
                     }
                     <Box sx={styles.varsContainer} style={showOutput ? {} : {width: "calc(100% - 4px)"}}>
                         <Divider/>
-                        <Typography color="primary" style={{marginLeft: '0.5em'}}>
+                        <Typography color="primary.light" style={{marginLeft: '0.5em'}}>
                             current variables
                         </Typography>
                         <Divider/>
@@ -135,13 +136,7 @@ const generateVarChips = (vars, styles, theme) => {
     let chips = [];
     for (let v in vars) {
         chips.push(
-            <Chip
-                variant="outlined"
-                color="primary"
-                avatar={<Avatar>{v}</Avatar>}
-                label={vars[v]}
-                sx={styles.varChip}
-            />
+            <VarChip name={v} value={vars[v]}/>
         );
     }
 
