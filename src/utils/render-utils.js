@@ -91,8 +91,10 @@ const handleNodeRender = (e, theme) => {
 
         // THE BEHEMOTH
         case "wrapper":
+            let showOutput = e.node.data.output.length > 0;
             content = (
                 <>
+                    {showOutput &&
                     <Paper variant="outlined" sx={styles.outputContainer}>
                         <Typography color="primary" style={{marginLeft: '0.5em'}}>
                             output
@@ -103,7 +105,8 @@ const handleNodeRender = (e, theme) => {
                             {e.node.data.output}
                         </Box>
                     </Paper>
-                    <Box sx={styles.varsContainer}>
+                    }
+                    <Box sx={styles.varsContainer} style={showOutput ? {} : {width: "calc(100% - 4px)"}}>
                         <Divider/>
                         <Typography color="primary" style={{marginLeft: '0.5em'}}>
                             current variables

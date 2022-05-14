@@ -1,6 +1,6 @@
 import {getTextWidth} from "./misc";
 
-const BASE_PADDING = 50;
+const BASE_PADDING = 25;
 
 const parseCommandsToNodes = (commands, theme) => {
     let parsed = [];
@@ -9,7 +9,12 @@ const parseCommandsToNodes = (commands, theme) => {
             let wrapperNode = {
                 id: wrapper.id,
                 type: "wrapper",
-                nodePadding: [BASE_PADDING, 250 + BASE_PADDING, 150 + BASE_PADDING, BASE_PADDING], // top right, bottom, left
+                nodePadding: [
+                    BASE_PADDING,
+                    wrapper.output.length > 0 ? BASE_PADDING + 250 : BASE_PADDING,
+                    BASE_PADDING + 150,
+                    BASE_PADDING
+                ], // top right, bottom, left
                 data: {
                     output: wrapper.output,
                     vars: wrapper.vars
