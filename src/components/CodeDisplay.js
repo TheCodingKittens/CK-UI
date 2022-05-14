@@ -20,6 +20,7 @@ import CodeEditor from "@uiw/react-textarea-code-editor";
 import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
 import py from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
 import {handleNodeRender} from "../utils/render-utils";
+import {scrollbar} from "../utils/css-mixins";
 
 SyntaxHighlighter.registerLanguage('python', py);
 
@@ -30,6 +31,7 @@ const CodeDisplay = props => {
           max-width: 100%;
           max-height: 100%;
           overflow-x: hidden;
+          ${scrollbar(theme)}
         `
     };
     const [maxHeight, setMaxHeight] = useState(500);
