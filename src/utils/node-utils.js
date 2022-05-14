@@ -1,5 +1,7 @@
 import {getTextWidth} from "./misc";
 
+const BASE_PADDING = 50;
+
 const parseCommandsToNodes = (commands, theme) => {
     let parsed = [];
     if (commands) {
@@ -7,7 +9,7 @@ const parseCommandsToNodes = (commands, theme) => {
             let wrapperNode = {
                 id: wrapper.id,
                 type: "wrapper",
-                nodePadding: [25, 25, 150, 25], // top right, bottom, left
+                nodePadding: [BASE_PADDING, 250 + BASE_PADDING, 150 + BASE_PADDING, BASE_PADDING], // top right, bottom, left
                 data: {
                     output: wrapper.output,
                     vars: wrapper.vars
@@ -53,7 +55,7 @@ const parseInnerCommands = (commands, parent, theme) => {
             case "If.body":
             case "If.else":
                 // TODO: expand by other nesting types
-                cmdNode.nodePadding = [25, 25, 25, 25];
+                cmdNode.nodePadding = [50, 25, 25, 25];
                 parsed = parsed.concat(parseInnerCommands(cmd.value, cmd.id));
                 break;
             default:

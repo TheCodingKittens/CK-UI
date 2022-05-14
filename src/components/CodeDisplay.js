@@ -19,7 +19,7 @@ import {
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
 import py from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import onedark from 'react-syntax-highlighter/dist/esm/styles/hljs/atom-one-dark';
+import {handleNodeRender} from "../utils/render-utils";
 
 SyntaxHighlighter.registerLanguage('python', py);
 
@@ -30,13 +30,6 @@ const CodeDisplay = props => {
           max-width: 100%;
           max-height: 100%;
           overflow-x: hidden;
-        `,
-        nodeContainer: css`
-          width: calc(100% - 2px);
-          height: calc(100% - 2px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
         `
     };
     const [maxHeight, setMaxHeight] = useState(500);
@@ -83,38 +76,9 @@ const CodeDisplay = props => {
         setLayoutHeight(layout.height);
     };
 
-    const handleNodeRender = e => {
-        console.log(e);
-
-        let content = e.node.data.command;
-
-        switch (e.node.type) {
-            case "Line":
-            case "If.test":
-                content = (
-                    <SyntaxHighlighter
-                        language="python"
-                        style={onedark}
-                        customStyle={{backgroundColor: 'transparent'}}
-                    >
-                        {e.node.data.command}
-                    </SyntaxHighlighter>
-                );
-                break;
-        }
-
-        return (
-            <foreignObject height={e.height} width={e.width} x={0} y={0}>
-                <Paper variant="outlined" sx={styles.nodeContainer}>
-                    {content}
-                </Paper>
-            </foreignObject>
-        );
-    };
-
     return (
         <Box sx={styles.displayContainer} style={{width: maxWidth, height: maxHeight}}>
-            <Canvas fit={false} zoomable={false} pannable={false} readonly
+            <Canvas fit={false} zoomable={true} pannable={false} readonly
                     defaultPosition="top"
                     height={layoutHeight}
                     maxWidth={maxWidth}
@@ -133,7 +97,7 @@ const CodeDisplay = props => {
                                 fontFamily: theme.typography.fontFamily
                             }}
                         >
-                            {event => handleNodeRender(event)}
+                            {event => handleNodeRender(event, theme)}
                         </Node>
                     )}
                     arrow={<MarkerArrow style={{fill: theme.palette.text.primary}}/>}
