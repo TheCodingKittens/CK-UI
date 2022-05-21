@@ -131,6 +131,62 @@ api.get = () => {
                     "b": 0
                 },
                 "edges": []
+            },
+            {
+                "id": 6,
+                "commands": [
+                    {
+                        "command": "while a < 4:",
+                        "id": "b7539dee-37f1-4525-b5b4-5d255e533603",
+                        "type": "While.test"
+                    },
+                    {
+                        "id": "ac8b9e72-8097-4e4c-a0b7-872cc2c887e5",
+                        "type": "While.body",
+                        "value": [
+                            {
+                                "command": "b += 1",
+                                "id": "8fb49374-8f19-4ff0-b03b-e23379cd243c",
+                                "type": "Line"
+                            },
+                            {
+                                "command": "print(b)",
+                                "id": "fb5a2d63-2310-4d21-bf73-e04a15afda01",
+                                "type": "Line"
+                            },
+                            {
+                                "command": "a += 1",
+                                "id": "ba2d3e1f-f3e4-4c6d-87a2-ec82779551d7",
+                                "type": "Line"
+                            }
+                        ]
+                    }
+                ],
+                "output": "1\n2",
+                "vars": {
+                    "a": 4,
+                    "b": 2
+                },
+                "edges": [
+                    {
+                        "from": "b7539dee-37f1-4525-b5b4-5d255e533603",
+                        "to": "ac8b9e72-8097-4e4c-a0b7-872cc2c887e5"
+                    },
+                    {
+                        "from": "ac8b9e72-8097-4e4c-a0b7-872cc2c887e5",
+                        "to": "b7539dee-37f1-4525-b5b4-5d255e533603"
+                    },
+                    {
+                        "from": "8fb49374-8f19-4ff0-b03b-e23379cd243c",
+                        "to": "fb5a2d63-2310-4d21-bf73-e04a15afda01",
+                        "parent": "ac8b9e72-8097-4e4c-a0b7-872cc2c887e5"
+                    },
+                    {
+                        "from": "fb5a2d63-2310-4d21-bf73-e04a15afda01",
+                        "to": "ba2d3e1f-f3e4-4c6d-87a2-ec82779551d7",
+                        "parent": "ac8b9e72-8097-4e4c-a0b7-872cc2c887e5"
+                    }
+                ]
             }
         ]
     }

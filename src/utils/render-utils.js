@@ -69,6 +69,8 @@ const handleNodeRender = (e, theme, onVarsClick) => {
     switch (e.node.type) {
         case "Line":
         case "If.test":
+        case "While.test":
+        case "For.test":
             content = (
                 <SyntaxHighlighter
                     language="python"
@@ -90,11 +92,34 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                 </Box>
             );
             break;
+
         case "If.else":
             content = (
                 <Box sx={styles.nodeHeader}>
                     <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
                         else:
+                    </Typography>
+                    <Divider/>
+                </Box>
+            );
+            break;
+
+        case "While.body":
+            content = (
+                <Box sx={styles.nodeHeader}>
+                    <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
+                        while true:
+                    </Typography>
+                    <Divider/>
+                </Box>
+            );
+            break;
+
+        case "For.body":
+            content = (
+                <Box sx={styles.nodeHeader}>
+                    <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
+                        for each iteration:
                     </Typography>
                     <Divider/>
                 </Box>
@@ -124,7 +149,6 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                             current variables
                         </Typography>
                         <Divider/>
-                        {/*TODO: handle scroll*/}
                         <Box sx={styles.varChipBox} onClick={() => onVarsClick(e.node)}>
                             {generateVarChips(e.node.data.vars)}
                         </Box>

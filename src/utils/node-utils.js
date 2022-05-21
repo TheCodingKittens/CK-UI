@@ -32,7 +32,6 @@ const parseInnerCommands = (commands, parent, theme) => {
     for (let cmd of commands) {
         // let width = (cmd.command ? cmd.command.length : 0) * 11 + 20;
         let width = 50 + (cmd.command ? getTextWidth(cmd.command, 'normal 16px Source Code Pro') : 0);
-        console.log(cmd.command, width);
         let cmdNode = {
             id: cmd.id,
             type: cmd.type,
@@ -46,6 +45,8 @@ const parseInnerCommands = (commands, parent, theme) => {
         switch (cmd.type) {
             case "If.body":
             case "If.else":
+            case "While.body":
+            case "For.body":
                 // TODO: expand by other nesting types
                 cmdNode.nodePadding = [50, 25, 25, 25];
                 parsed = parsed.concat(parseInnerCommands(cmd.value, cmd.id));
