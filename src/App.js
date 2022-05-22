@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
 import {
+    Backdrop,
     Box,
     Card,
-    CardContent,
+    CardContent, CircularProgress,
     Divider,
     Typography,
     useTheme
 } from "@mui/material";
 import CodeDisplay from "./components/CodeDisplay";
 import CodeInput from "./components/CodeInput";
-import {api} from "./utils/api";
+import {api, getCurrentToken} from "./utils/api";
 
 
 const App = () => {
@@ -50,23 +51,27 @@ const App = () => {
         `,
     };
     const [commands, setCommands] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         (async () => {
-            let res = await api.get('/history');
+            let res = await api.get('/history/' + getCurrentToken());
             if (res.status === 200) {
-                setCommands(res.data);
+                setCommands(res.data.commands);
+                setLoading(false);
             }
         })();
     }, []);
 
     const sendCommand = async input => {
-        let res = await api.post('/command', {command: btoa(input)});
+        setLoading(true);
+        let res = await api.post('/command', {
+            command: btoa(input),
+            token: getCurrentToken()
+        });
         if (res.status === 200) { // TODO: update to 201
-            res = await api.get('/history');
-            if (res.status === 200) {
-                setCommands(res.data);
-            }
+            setCommands(res.data);
+            setLoading(false);
         }
     };
 
@@ -93,9 +98,14 @@ const App = () => {
                 <CardContent sx={styles.mainCardContent} id="code-display">
                     <CodeDisplay commands={commands} onEdit={editCommand}/>
                 </CardContent>
+
+                <Backdrop open={loading}>
+                    {/*<Typography>submitting...</Typography>*/}
+                    <CircularProgress color="primary"/>
+                </Backdrop>
             </Card>
             <Card variant="outlined" sx={styles.inputCard}>
-                <CodeInput onSend={sendCommand}/>
+                <CodeInput onSend={i => sendCommand(i)}/>
             </Card>
         </Box>
     );

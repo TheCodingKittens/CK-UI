@@ -20,7 +20,6 @@ const handleNodeRender = (e, theme, onVarsClick) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          cursor: pointer;
         `,
         nodeHeader: css`
           align-self: flex-start;
@@ -42,6 +41,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
         outputBox: css`
           padding: 1em;
           box-sizing: border-box;
+          white-space: pre;
         `,
         varsContainer: css`
           position: absolute;
@@ -59,12 +59,33 @@ const handleNodeRender = (e, theme, onVarsClick) => {
           overflow: auto;
           cursor: pointer;
           ${scrollbar(theme)}
+        `,
+        clickableNode: css`
+          cursor: pointer;
+          transition: border 0.25s ease-in-out;
+          &:hover {
+            border-color: ${theme.palette.primary.light};
+          }
         `
     };
 
-    console.log(e);
+    const getHeaderText = nodeType => {
+        switch (nodeType) {
+            case "If.body":
+                return "if true:";
+            case "If.else":
+                return "else:";
+            case "While.body":
+                return "while true:";
+            case "For.body":
+                return "for each iteration:";
+            default:
+                return "";
+        }
+    }
 
     let content = e.node.data.command;
+    let rootStyles = [styles.nodeContainer];
 
     switch (e.node.type) {
         case "Line":
@@ -80,46 +101,17 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                     {e.node.data.command}
                 </SyntaxHighlighter>
             );
+            rootStyles.push(styles.clickableNode);
             break;
 
         case "If.body":
-            content = (
-                <Box sx={styles.nodeHeader}>
-                    <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
-                        if true:
-                    </Typography>
-                    <Divider/>
-                </Box>
-            );
-            break;
-
         case "If.else":
-            content = (
-                <Box sx={styles.nodeHeader}>
-                    <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
-                        else:
-                    </Typography>
-                    <Divider/>
-                </Box>
-            );
-            break;
-
         case "While.body":
-            content = (
-                <Box sx={styles.nodeHeader}>
-                    <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
-                        while true:
-                    </Typography>
-                    <Divider/>
-                </Box>
-            );
-            break;
-
         case "For.body":
             content = (
                 <Box sx={styles.nodeHeader}>
                     <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
-                        for each iteration:
+                        {getHeaderText(e.node.type)}
                     </Typography>
                     <Divider/>
                 </Box>
@@ -150,7 +142,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                         </Typography>
                         <Divider/>
                         <Box sx={styles.varChipBox} onClick={() => onVarsClick(e.node)}>
-                            {generateVarChips(e.node.data.vars)}
+                            {generateVarChips(e.node.data.variables)}
                         </Box>
                     </Box>
                 </>
@@ -160,7 +152,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
 
     return (
         <foreignObject height={e.height} width={e.width} x={0} y={0}>
-            <Paper variant="outlined" sx={styles.nodeContainer}>
+            <Paper variant="outlined" sx={rootStyles}>
                 {content}
             </Paper>
         </foreignObject>
@@ -168,14 +160,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
 };
 
 const generateVarChips = (vars) => {
-    let chips = [];
-    for (let v in vars) {
-        chips.push(
-            <VarChip name={v} value={vars[v]}/>
-        );
-    }
-
-    return chips;
+    return vars.map(v => <VarChip name={v.var_name} value={v.value} key={v.pk}/>);
 };
 
 export {

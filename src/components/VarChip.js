@@ -53,6 +53,9 @@ const VarChip = props => {
     );
 };
 
-VarChip.propTypes = {};
+VarChip.propTypes = {
+    name: PropTypes.string,
+    value: PropTypes.string
+};
 
 export default VarChip;

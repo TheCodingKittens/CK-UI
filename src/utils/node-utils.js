@@ -7,7 +7,7 @@ const parseCommandsToNodes = (commands, theme) => {
     if (commands) {
         for (let wrapper of commands) {
             let wrapperNode = {
-                id: wrapper.id,
+                id: wrapper.pk,
                 type: "wrapper",
                 nodePadding: [
                     BASE_PADDING,
@@ -17,11 +17,11 @@ const parseCommandsToNodes = (commands, theme) => {
                 ], // top right, bottom, left
                 data: {
                     output: wrapper.output,
-                    vars: wrapper.vars
+                    variables: wrapper.variables
                 }
             };
             parsed.push(wrapperNode);
-            parsed = parsed.concat(parseInnerCommands(wrapper.commands, wrapper.id, theme));
+            parsed = parsed.concat(parseInnerCommands(wrapper.nodes, wrapper.pk, theme));
         }
     }
     return parsed;
@@ -32,8 +32,11 @@ const parseInnerCommands = (commands, parent, theme) => {
     for (let cmd of commands) {
         // let width = (cmd.command ? cmd.command.length : 0) * 11 + 20;
         let width = 50 + (cmd.command ? getTextWidth(cmd.command, 'normal 16px Source Code Pro') : 0);
+        if (width < 100) {
+            width = 100;
+        }
         let cmdNode = {
-            id: cmd.id,
+            id: cmd.node_id,
             type: cmd.type,
             parent: parent,
             width: width,
@@ -49,7 +52,7 @@ const parseInnerCommands = (commands, parent, theme) => {
             case "For.body":
                 // TODO: expand by other nesting types
                 cmdNode.nodePadding = [50, 25, 25, 25];
-                parsed = parsed.concat(parseInnerCommands(cmd.value, cmd.id));
+                parsed = parsed.concat(parseInnerCommands(cmd.nodes, cmd.node_id));
                 break;
             default:
                 // cmdNode.text = cmd.command;
@@ -102,10 +105,13 @@ const parseEdges = commands => {
         edges = generateSurfaceEdges(commands);
         for (let cmd of commands) {
             for (let e of cmd.edges) {
+                if (!e.target_node || !e.target_node.length) continue;
+
                 edges.push({
-                    parent: cmd.id,
-                    ...e,
-                    id: `${e.from}-${e.to}`
+                    parent: e.parent_node.length ? e.parent_node : cmd.pk,
+                    from: e.source_node,
+                    to: e.target_node,
+                    id: `${e.source_node}-${e.target_node}`
                 })
             }
         }
@@ -117,8 +123,8 @@ const generateSurfaceEdges = commands => {
     let edges = [];
     if (commands) {
         for (let i = 0; i < commands.length - 1; i++) {
-            let from = commands[i].id;
-            let to = commands[i + 1].id;
+            let from = commands[i].pk;
+            let to = commands[i + 1].pk;
             edges.push({
                 id: `${from}-${to}`,
                 from, to

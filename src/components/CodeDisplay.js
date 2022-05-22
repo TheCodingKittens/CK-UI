@@ -78,6 +78,7 @@ const CodeDisplay = props => {
 
     const handleLayoutChange = (layout) => {
         setLayoutHeight(layout.height);
+        document.getElementById('code-scroller').scrollIntoView();
     };
 
     const handleVarsClick = (node) => {
@@ -116,6 +117,7 @@ const CodeDisplay = props => {
                         />
                     )}
             />
+            <Box id="code-scroller"/>
             <Dialog
                 open={!!editNode} onClose={() => handleEditClose()}
                 PaperProps={{sx: {background: theme.palette.background.paper}}}
