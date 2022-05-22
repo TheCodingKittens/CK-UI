@@ -116,6 +116,11 @@ const CodeDisplay = props => {
                             style={{stroke: theme.palette.text.primary}}
                         />
                     )}
+                    layoutOptions={{
+                        spacing: '25',
+                        'spacing.nodeNodeBetweenLayers': '25',
+                        'elk.layered.spacing.edgeNodeBetweenLayers': '25'
+                    }}
             />
             <Box id="code-scroller"/>
             <Dialog
