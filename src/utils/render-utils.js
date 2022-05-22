@@ -37,11 +37,15 @@ const handleNodeRender = (e, theme, onVarsClick) => {
           border-bottom: 0;
           border-top: 0;
           cursor: default;
+          display: flex;
+          flex-direction: column;
         `,
         outputBox: css`
           padding: 1em;
           box-sizing: border-box;
           white-space: pre;
+          overflow: auto;
+          ${scrollbar(theme)}
         `,
         varsContainer: css`
           position: absolute;
@@ -63,6 +67,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
         clickableNode: css`
           cursor: pointer;
           transition: border 0.25s ease-in-out;
+
           &:hover {
             border-color: ${theme.palette.primary.light};
           }
