@@ -150,6 +150,9 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                             {generateVarChips(e.node.data.variables)}
                         </Box>
                     </Box>
+                    <Box>
+
+                    </Box>
                 </>
             );
             break;
@@ -169,10 +172,10 @@ const generateVarChips = (vars) => {
 };
 
 const getEdgeStyle = (edge, theme) => {
-    let style = {stroke: theme.palette.text.primary};
+    let style = {stroke: '#6c6c6c'};
 
-    if (edge.highlighted) {
-        style.stroke = theme.palette.primary.light;
+    if (edge.data && edge.data.executed === "True") {
+        style.stroke = theme.palette.text.primary;
     }
 
     return style;
