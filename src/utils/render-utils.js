@@ -168,7 +168,18 @@ const generateVarChips = (vars) => {
     return vars.map(v => <VarChip name={v.var_name} value={v.value} key={v.pk}/>);
 };
 
+const getEdgeStyle = (edge, theme) => {
+    let style = {stroke: theme.palette.text.primary};
+
+    if (edge.highlighted) {
+        style.stroke = theme.palette.primary.light;
+    }
+
+    return style;
+}
+
 export {
     handleNodeRender,
-    generateVarChips
+    generateVarChips,
+    getEdgeStyle
 }

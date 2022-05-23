@@ -111,6 +111,7 @@ const parseEdges = commands => {
                     parent: e.parent_node.length ? e.parent_node : cmd.pk,
                     from: e.source_node,
                     to: e.target_node,
+                    highlighted: e.executed,
                     id: `${e.source_node}-${e.target_node}`
                 })
             }

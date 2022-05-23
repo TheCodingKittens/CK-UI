@@ -19,7 +19,7 @@ import {
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
 import py from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import {handleNodeRender} from "../utils/render-utils";
+import {getEdgeStyle, handleNodeRender} from "../utils/render-utils";
 import {scrollbar} from "../utils/css-mixins";
 import VarsDialog from "./VarsDialog";
 
@@ -113,7 +113,7 @@ const CodeDisplay = props => {
                     edge={(edge) => (
                         <Edge
                             {...edge}
-                            style={{stroke: theme.palette.text.primary}}
+                            style={getEdgeStyle(edge, theme)}
                         />
                     )}
                     layoutOptions={{
