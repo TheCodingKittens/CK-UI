@@ -12,7 +12,10 @@ import {
 import CodeDisplay from "./components/CodeDisplay";
 import CodeInput from "./components/CodeInput";
 import {api, getCurrentToken} from "./utils/api";
+import ErrorDialog from "./components/ErrorDialog";
 
+// this does not need to update any states
+let lastInput = '';
 
 const App = () => {
     const theme = useTheme();
@@ -52,6 +55,7 @@ const App = () => {
     };
     const [commands, setCommands] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         (async () => {
@@ -64,15 +68,27 @@ const App = () => {
     }, []);
 
     const sendCommand = async input => {
+        lastInput = input;
         setLoading(true);
-        let res = await api.post('/command', {
-            command: btoa(input),
-            token: getCurrentToken()
-        });
-        if (res.status === 200) { // TODO: update to 201
-            setCommands(res.data);
-            setLoading(false);
+        let result = true;
+        try {
+            let res = await api.post('/command', {
+                command: btoa(input),
+                token: getCurrentToken()
+            });
+            if (res.status === 200) { // TODO: update to 201
+                setCommands(res.data);
+            }
         }
+        catch (error) {
+            result = false;
+            console.log("failed to send command!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
+        return result;
     };
 
     const editCommand = async input => {
@@ -98,7 +114,6 @@ const App = () => {
                 <CardContent sx={styles.mainCardContent} id="code-display">
                     <CodeDisplay commands={commands} onEdit={editCommand}/>
                 </CardContent>
-
                 <Backdrop open={loading}>
                     {/*<Typography>submitting...</Typography>*/}
                     <CircularProgress color="primary"/>
@@ -107,6 +122,12 @@ const App = () => {
             <Card variant="outlined" sx={styles.inputCard}>
                 <CodeInput onSend={i => sendCommand(i)}/>
             </Card>
+            <ErrorDialog
+                input={lastInput}
+                error={error}
+                open={!!error}
+                onClose={() => setError(null)}
+            />
         </Box>
     );
 };

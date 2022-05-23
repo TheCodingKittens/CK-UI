@@ -16,14 +16,12 @@ const CodeInput = props => {
 
     const sendCurrentCode = async () => {
         setWaiting(true);
-        try {
-            // const result = await api.post('/command', {command: currentInput});
-            if (props.onSend) {
-                await props.onSend(currentInput);
-            }
+        let result = true;
+        if (props.onSend) {
+            result = await props.onSend(currentInput);
+        }
+        if (result) {
             setCurrentInput("");
-        } catch (error) {
-            console.error("Failed to send command to backend!", error);
         }
         setWaiting(false);
     };
