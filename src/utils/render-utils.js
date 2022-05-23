@@ -5,6 +5,7 @@ import React from "react";
 import {css} from "@emotion/react";
 import VarChip from "../components/VarChip";
 import {scrollbar} from "./css-mixins";
+import VarsDialog from "../components/VarsDialog";
 
 // this method picks and chooses how each node looks!
 const handleNodeRender = (e, theme, onVarsClick) => {

@@ -41,6 +41,7 @@ const CodeDisplay = props => {
     const [editNode, setEditNode] = useState(null);
     const [detailsNode, setDetailsNode] = useState(null);
     const [newCommand, setNewCommand] = useState('');
+
     const nodes = parseCommandsToNodes(props.commands, theme);
     let edges = parseEdges(props.commands);
 
@@ -82,6 +83,7 @@ const CodeDisplay = props => {
     };
 
     const handleVarsClick = (node) => {
+        console.log("i was clicked!");
         setDetailsNode(node);
     };
 
