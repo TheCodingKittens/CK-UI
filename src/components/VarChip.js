@@ -82,33 +82,37 @@ const VarChip = props => {
     };
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    let content;
-    if (props.value !== null) {
-        content = props.value;
-    }
+    let content = props.value;
+    if (props.type !== 'general') {
+        if (props.type === 'list') {
+            let elements = [];
 
-    if (Array.isArray(content)) {
-        let elements = [];
+            for (let entry of content.slice(0, 5)) {
+                elements.push(
+                    <Box sx={styles.listEntryContainer}>
+                        {entry}
+                    </Box>
+                );
+                elements.push(
+                    <Box sx={styles.listEntrySeparator}>,</Box>
+                );
+            }
 
-        for (let entry of content.slice(0, 5)) {
-            elements.push(
-                <Box sx={styles.listEntryContainer}>
-                    {entry}
-                </Box>
-            );
-            elements.push(
-                <Box sx={styles.listEntrySeparator}>,</Box>
-            );
+            if (content.length > 5) {
+                elements.push(
+                    <Box sx={styles.listEntryContainer}>
+                        ...
+                    </Box>
+                );
+            } else {
+                elements.splice(elements.length - 1, 1);
+            }
+
+            content = elements;
         }
+        // type is dict
+        else {
 
-        if (content.length > 5) {
-            elements.push(
-                <Box sx={styles.listEntryContainer}>
-                    ...
-                </Box>
-            );
-        } else {
-            elements.splice(elements.length - 1, 1);
         }
 
         const handleClick = event => {
@@ -125,7 +129,7 @@ const VarChip = props => {
                         onClick={e => handleClick(e)}
                     >
                         <Box sx={styles.varChipName}>{props.name}</Box>
-                        <Box sx={styles.varChipValue}>{elements}</Box>
+                        <Box sx={styles.varChipValue}>{content}</Box>
                     </Box>
                 </Tooltip>
                 <InspectorDialog
@@ -136,18 +140,8 @@ const VarChip = props => {
                 />
             </>
         )
-
         // s u c c
-
-    }
-    /*
-    else if ... {
-        content = (
-            <Box></Box>
-        );
-    }*/
-
-    return (
+    } else return (
         <Box sx={styles.varChipContainer}>
             <Box sx={styles.varChipName}>{props.name}</Box>
             <Box sx={styles.varChipValue}>{content}</Box>

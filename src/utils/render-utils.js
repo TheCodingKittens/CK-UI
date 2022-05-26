@@ -1,6 +1,6 @@
 import {Light as SyntaxHighlighter} from "react-syntax-highlighter";
 import oneDark from "react-syntax-highlighter/dist/cjs/styles/hljs/atom-one-dark";
-import {Box, Divider, Paper, Typography} from "@mui/material";
+import {Box, Divider, Icon, IconButton, Paper, Typography} from "@mui/material";
 import React from "react";
 import {css} from "@emotion/react";
 import VarChip from "../components/VarChip";
@@ -13,7 +13,6 @@ const handleNodeRender = (e, theme, onVarsClick) => {
         displayContainer: css`
           max-width: 100%;
           max-height: 100%;
-          overflow-x: hidden;
         `,
         nodeContainer: css`
           width: calc(100% - 2px);
@@ -21,6 +20,9 @@ const handleNodeRender = (e, theme, onVarsClick) => {
           display: flex;
           align-items: center;
           justify-content: center;
+        `,
+        wrapperContainer: css`
+          border-top-right-radius: 0;
         `,
         nodeHeader: css`
           align-self: flex-start;
@@ -72,6 +74,16 @@ const handleNodeRender = (e, theme, onVarsClick) => {
           &:hover {
             border-color: ${theme.palette.primary.light};
           }
+        `,
+        optionsContainer: css`
+          box-sizing: border-box;
+          position: absolute;
+          left: 100%;
+          top: 0;
+          color: ${theme.palette.text.secondary};
+          border-left: none;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
         `
     };
 
@@ -127,6 +139,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
         // THE BEHEMOTH
         case "wrapper":
             let showOutput = e.node.data.output.length > 0;
+            rootStyles.push(styles.wrapperContainer);
             content = (
                 <>
                     {showOutput &&
@@ -141,6 +154,11 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                         </Box>
                     </Paper>
                     }
+                    <Paper variant="outlined" sx={styles.optionsContainer}>
+                        <IconButton color="inherit" size="small" style={{flexGrow: 0}}>
+                            <Icon>more_vert</Icon>
+                        </IconButton>
+                    </Paper>
                     <Box sx={styles.varsContainer} style={showOutput ? {} : {width: "calc(100% - 4px)"}}>
                         <Divider/>
                         <Typography color="primary.light" style={{marginLeft: '0.5em'}}>
@@ -151,16 +169,13 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                             {generateVarChips(e.node.data.variables)}
                         </Box>
                     </Box>
-                    <Box>
-
-                    </Box>
                 </>
             );
             break;
     }
 
     return (
-        <foreignObject height={e.height} width={e.width} x={0} y={0}>
+        <foreignObject height={e.height} width={e.width} x={0} y={0} style={{overflow: 'visible'}}>
             <Paper variant="outlined" sx={rootStyles}>
                 {content}
             </Paper>
@@ -169,7 +184,14 @@ const handleNodeRender = (e, theme, onVarsClick) => {
 };
 
 const generateVarChips = (vars) => {
-    return vars.map(v => <VarChip name={v.var_name} value={v.value} key={v.pk}/>);
+    return vars.map(v =>
+        <VarChip
+            name={v.var_name}
+            value={JSON.parse(v.value)}
+            type={v.type}
+            key={v.pk}
+        />
+    );
 };
 
 const getEdgeStyle = (edge, theme) => {
