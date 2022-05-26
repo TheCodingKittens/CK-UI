@@ -113,7 +113,15 @@ const VarChip = props => {
         }
         // type is dict
         else {
-            content = JSON.stringify(props.value);
+            //content = JSON.stringify(props.value);
+            let dictLength = Object.keys(props.value).length;
+            if (dictLength === 1){
+                content = `dictionary of 1 entry`;
+            }
+            else {
+                content = `dictionary of ${Object.keys(props.value).length} entries`;
+            }
+
         }
 
         const handleClick = event => {
@@ -124,7 +132,7 @@ const VarChip = props => {
 
         return (
             <>
-                <Tooltip title="show full list">
+                <Tooltip title="show full element">
                     <Box
                         sx={[styles.varChipContainer, styles.listChipContainer]}
                         onClick={e => handleClick(e)}
