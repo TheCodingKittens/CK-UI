@@ -99,7 +99,9 @@ const App = () => {
         lastInput = node.data.command;
         try {
             let res = await api.delete(`/command/${node.id}`, {
-                token: getCurrentToken()
+                data: {
+                    token: getCurrentToken()
+                }
             });
             if (res.status === 200) {
                 setCommands(res.data);
