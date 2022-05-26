@@ -135,7 +135,7 @@ const VarChip = props => {
                 <InspectorDialog
                     open={dialogOpen}
                     onClose={() => setDialogOpen(false)}
-                    content={content}
+                    content={props.value}
                     name={props.name}
                 />
             </>
