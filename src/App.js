@@ -91,6 +91,25 @@ const App = () => {
         return result;
     };
 
+    const deleteNode = async node => {
+        setLoading(true);
+        try {
+            let res = await api.delete(`/command/${node.id}`, {
+                token: getCurrentToken()
+            });
+            if (res.status === 200) { // TODO: update to 201
+                setCommands(res.data);
+            }
+        }
+        catch (error) {
+            console.log("failed to send command!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
+    };
+
     const editCommand = async input => {
         // TODO: send edit command request
         // let res = await api.post('/command', {command: btoa(input)});
@@ -112,10 +131,13 @@ const App = () => {
                 </CardContent>
                 <Divider/>
                 <CardContent sx={styles.mainCardContent} id="code-display">
-                    <CodeDisplay commands={commands} onEdit={editCommand}/>
+                    <CodeDisplay
+                        commands={commands}
+                        onEdit={editCommand}
+                        onDelete={deleteNode}
+                    />
                 </CardContent>
                 <Backdrop open={loading}>
-                    {/*<Typography>submitting...</Typography>*/}
                     <CircularProgress color="primary"/>
                 </Backdrop>
             </Card>

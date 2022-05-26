@@ -7,7 +7,7 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
+    DialogTitle, Icon, ListItemIcon, ListItemText, Menu, MenuItem,
     Paper,
     useTheme
 } from "@mui/material";
@@ -41,6 +41,9 @@ const CodeDisplay = props => {
     const [editNode, setEditNode] = useState(null);
     const [detailsNode, setDetailsNode] = useState(null);
     const [newCommand, setNewCommand] = useState('');
+    const [openWrapperMenu, setOpenWrapperMenu] = useState(false);
+    const [wrapperMenuAnchor, setWrapperMenuAnchor] = useState(null);
+    const [menuNode, setMenuNode] = useState(null);
 
     const nodes = parseCommandsToNodes(props.commands, theme);
     let edges = parseEdges(props.commands);
@@ -78,13 +81,30 @@ const CodeDisplay = props => {
     };
 
     const handleLayoutChange = (layout) => {
-        setLayoutHeight(layout.height);
-        document.getElementById('code-scroller').scrollIntoView();
+        if (layout.height !== layoutHeight) {
+            setLayoutHeight(layout.height);
+            document.getElementById('code-scroller').scrollIntoView();
+        }
     };
 
     const handleVarsClick = (node) => {
-        console.log("i was clicked!");
+        console.log("i was clicked!", node);
         setDetailsNode(node);
+    };
+
+    const handleMoreClick = (event, node) => {
+        setWrapperMenuAnchor(event.currentTarget);
+        setMenuNode(node);
+        setOpenWrapperMenu(true);
+    };
+
+    const handleDeleteClick = () => {
+        if (!menuNode || !props.onDelete) return;
+        props.onDelete(menuNode);
+    };
+
+    const handleRearrangeClick = () => {
+        if (!menuNode) return;
     };
 
     return (
@@ -108,7 +128,7 @@ const CodeDisplay = props => {
                                 fontFamily: theme.typography.fontFamily
                             }}
                         >
-                            {event => handleNodeRender(event, theme, handleVarsClick)}
+                            {event => handleNodeRender(event, theme, handleVarsClick, handleMoreClick)}
                         </Node>
                     )}
                     arrow={<MarkerArrow style={{fill: theme.palette.text.primary}}/>}
@@ -152,6 +172,21 @@ const CodeDisplay = props => {
                 onClose={() => setDetailsNode(null)}
                 node={detailsNode}
             />
+            <Menu
+                anchorEl={wrapperMenuAnchor}
+                open={openWrapperMenu}
+                onClose={() => setOpenWrapperMenu(false)}
+                onClick={() => setOpenWrapperMenu(false)}
+            >
+                <MenuItem onClick={handleRearrangeClick}>
+                    <ListItemIcon><Icon>unfold_more</Icon></ListItemIcon>
+                    <ListItemText>Rearrange</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={handleDeleteClick}>
+                    <ListItemIcon><Icon>delete</Icon></ListItemIcon>
+                    <ListItemText>Delete</ListItemText>
+                </MenuItem>
+            </Menu>
         </Box>
     );
 };

@@ -8,7 +8,7 @@ import {scrollbar} from "./css-mixins";
 import VarsDialog from "../components/VarsDialog";
 
 // this method picks and chooses how each node looks!
-const handleNodeRender = (e, theme, onVarsClick) => {
+const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
     const styles = {
         displayContainer: css`
           max-width: 100%;
@@ -85,6 +85,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
           border-right: none;
           border-top-right-radius: 0;
           border-bottom-left-radius: 0;
+          z-index: 1;
         `
     };
 
@@ -105,6 +106,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
 
     let content = e.node.data.command;
     let rootStyles = [styles.nodeContainer];
+    let clickable = false;
 
     switch (e.node.type) {
         case "Line":
@@ -121,6 +123,7 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                 </SyntaxHighlighter>
             );
             rootStyles.push(styles.clickableNode);
+            clickable = true;
             break;
 
         case "If.body":
@@ -156,7 +159,11 @@ const handleNodeRender = (e, theme, onVarsClick) => {
                     </Paper>
                     }
                     <Paper variant="outlined" sx={styles.optionsContainer}>
-                        <IconButton color="inherit" size="small" style={{flexGrow: 0}}>
+                        <IconButton
+                            color="inherit"
+                            size="small"
+                            onClick={event => onMoreClick(event, e.node)}
+                        >
                             <Icon>more_vert</Icon>
                         </IconButton>
                     </Paper>
@@ -176,8 +183,16 @@ const handleNodeRender = (e, theme, onVarsClick) => {
     }
 
     return (
-        <foreignObject height={e.height} width={e.width} x={0} y={0} style={{overflow: 'visible'}}>
-            <Paper variant="outlined" sx={rootStyles}>
+        <foreignObject
+            height={e.height} width={e.width}
+            x={0} y={0}
+            style={{overflow: 'visible'}}
+        >
+            <Paper
+                variant="outlined"
+                sx={rootStyles}
+                onClick={clickable ? () => onNodeClick(e.node) : null}
+            >
                 {content}
             </Paper>
         </foreignObject>
