@@ -16,6 +16,7 @@ import ErrorDialog from "./components/ErrorDialog";
 
 // this does not need to update any states
 let lastInput = '';
+let lastAction = 'new';
 
 const App = () => {
     const theme = useTheme();
@@ -70,6 +71,7 @@ const App = () => {
     const sendCommand = async input => {
         lastInput = input;
         setLoading(true);
+        lastAction = 'new';
         let result = true;
         try {
             let res = await api.post('/command', {
@@ -79,8 +81,7 @@ const App = () => {
             if (res.status === 200) { // TODO: update to 201
                 setCommands(res.data);
             }
-        }
-        catch (error) {
+        } catch (error) {
             result = false;
             console.log("failed to send command!", error);
             if (error.response && error.response.data.detail) {
@@ -88,20 +89,22 @@ const App = () => {
             }
         }
         setLoading(false);
+        document.getElementById('code-input').focus();
         return result;
     };
 
     const deleteNode = async node => {
         setLoading(true);
+        lastAction = 'delete';
+        lastInput = node.data.command;
         try {
             let res = await api.delete(`/command/${node.id}`, {
                 token: getCurrentToken()
             });
-            if (res.status === 200) { // TODO: update to 201
+            if (res.status === 200) {
                 setCommands(res.data);
             }
-        }
-        catch (error) {
+        } catch (error) {
             console.log("failed to send command!", error);
             if (error.response && error.response.data.detail) {
                 setError(error.response.data.detail);
@@ -110,15 +113,26 @@ const App = () => {
         setLoading(false);
     };
 
-    const editCommand = async input => {
-        // TODO: send edit command request
-        // let res = await api.post('/command', {command: btoa(input)});
-        // if (res.status === 200) { // TODO: update to 201
-        //     res = await api.get('/history');
-        //     if (res.status === 200) {
-        //         setCommands(res.data);
-        //     }
-        // }
+    const editCommand = async (node, newCommand) => {
+        setLoading(true);
+        lastAction = 'edit';
+        lastInput = newCommand;
+        try {
+            let res = await api.put(`/command/${node.data.wrapper_id}`, {
+                new_command: btoa(newCommand),
+                token: getCurrentToken(),
+                node_id: node.id
+            });
+            if (res.status === 200) {
+                setCommands(res.data);
+            }
+        } catch (error) {
+            console.log("failed to send command!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
     };
 
     return (
@@ -147,6 +161,7 @@ const App = () => {
             <ErrorDialog
                 input={lastInput}
                 error={error}
+                lastAction={lastAction}
                 open={!!error}
                 onClose={() => setError(null)}
             />

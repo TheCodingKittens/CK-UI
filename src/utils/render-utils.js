@@ -20,9 +20,9 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          box-sizing: border-box;
         `,
         wrapperContainer: css`
-          border-top-right-radius: 0;
         `,
         nodeHeader: css`
           align-self: flex-start;
@@ -33,12 +33,13 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
           height: calc(100% - 4px);
           width: 250px;
           position: absolute;
-          right: 2px;
+          right: 3px;
           box-sizing: border-box;
-          border-radius: 0;
-          border-right: 0;
-          border-bottom: 0;
-          border-top: 0;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          border-right: none;
+          border-bottom: none;
+          border-top: none;
           cursor: default;
           display: flex;
           flex-direction: column;
@@ -70,6 +71,7 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
         clickableNode: css`
           cursor: pointer;
           transition: border 0.25s ease-in-out;
+          padding: 0 1em;
 
           &:hover {
             border-color: ${theme.palette.primary.light};
@@ -78,8 +80,8 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
         optionsContainer: css`
           box-sizing: border-box;
           position: absolute;
-          right: 2px;
-          bottom: 2px;
+          right: 3px;
+          bottom: 3px;
           color: ${theme.palette.text.secondary};
           border-bottom: none;
           border-right: none;
@@ -118,6 +120,7 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
                     language="python"
                     style={oneDark}
                     customStyle={{backgroundColor: 'transparent'}}
+                    wrapLongLines
                 >
                     {e.node.data.command}
                 </SyntaxHighlighter>

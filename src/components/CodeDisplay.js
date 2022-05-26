@@ -65,11 +65,10 @@ const CodeDisplay = props => {
         }
     }
 
-    const handleNodeClick = (e, node) => {
+    const handleNodeClick = (node) => {
         console.log(node);
-        setNewCommand(node.command.command);
+        setNewCommand(node.data.command);
         setEditNode(node);
-        e.preventDefault();
     };
 
     const handleEditClose = (save) => {
@@ -128,7 +127,14 @@ const CodeDisplay = props => {
                                 fontFamily: theme.typography.fontFamily
                             }}
                         >
-                            {event => handleNodeRender(event, theme, handleVarsClick, handleMoreClick)}
+                            {event =>
+                                handleNodeRender(
+                                    event,
+                                    theme,
+                                    handleVarsClick,
+                                    handleMoreClick,
+                                    handleNodeClick
+                                )}
                         </Node>
                     )}
                     arrow={<MarkerArrow style={{fill: theme.palette.text.primary}}/>}
@@ -178,13 +184,13 @@ const CodeDisplay = props => {
                 onClose={() => setOpenWrapperMenu(false)}
                 onClick={() => setOpenWrapperMenu(false)}
             >
-                <MenuItem onClick={handleRearrangeClick}>
+                <MenuItem onClick={handleRearrangeClick} disabled>
                     <ListItemIcon><Icon>unfold_more</Icon></ListItemIcon>
-                    <ListItemText>Rearrange</ListItemText>
+                    <ListItemText>Rearrange nodes</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={handleDeleteClick}>
                     <ListItemIcon><Icon>delete</Icon></ListItemIcon>
-                    <ListItemText>Delete</ListItemText>
+                    <ListItemText>Delete node</ListItemText>
                 </MenuItem>
             </Menu>
         </Box>

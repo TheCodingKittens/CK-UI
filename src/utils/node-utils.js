@@ -31,18 +31,25 @@ const parseInnerCommands = (commands, parent, theme) => {
     let parsed = [];
     for (let cmd of commands) {
         // let width = (cmd.command ? cmd.command.length : 0) * 11 + 20;
+        let height = 50;
         let width = 50 + (cmd.command ? getTextWidth(cmd.command, 'normal 16px Source Code Pro') : 0);
         if (width < 100) {
             width = 100;
+        }
+        else if (width > window.innerWidth / 2) {
+            let lines = (width / (window.innerWidth / 2));
+            height += 19 * lines;
+            width = window.innerWidth / 2;
         }
         let cmdNode = {
             id: cmd.node_id,
             type: cmd.type,
             parent: parent,
             width: width,
-            height: 50,
+            height: height,
             data: {
-                command: cmd.command
+                command: cmd.command,
+                wrapper_id: cmd.command_pk
             }
         };
         switch (cmd.type) {

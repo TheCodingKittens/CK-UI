@@ -124,7 +124,7 @@ const VarChip = props => {
 
         return (
             <>
-                <Tooltip title="show full list">
+                <Tooltip title="inspect variable">
                     <Box
                         sx={[styles.varChipContainer, styles.listChipContainer]}
                         onClick={e => handleClick(e)}

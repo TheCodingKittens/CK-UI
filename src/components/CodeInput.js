@@ -32,6 +32,7 @@ const CodeInput = props => {
             background: theme.palette.background.default
         }}>
             <CodeEditor
+                id="code-input"
                 language="python"
                 placeholder="Enter your code here..."
                 style={{flexGrow: "1", background: theme.palette.background.default}}
