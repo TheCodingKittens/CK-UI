@@ -87,14 +87,15 @@ const VarChip = props => {
         if (props.type === 'list') {
             let elements = [];
 
+            let i = 0;
             for (let entry of content.slice(0, 5)) {
                 elements.push(
-                    <Box sx={styles.listEntryContainer}>
+                    <Box sx={styles.listEntryContainer} key={`var-${i++}`}>
                         {entry}
                     </Box>
                 );
                 elements.push(
-                    <Box sx={styles.listEntrySeparator}>,</Box>
+                    <Box sx={styles.listEntrySeparator} key={`sep-${i++}`}>,</Box>
                 );
             }
 
@@ -112,7 +113,7 @@ const VarChip = props => {
         }
         // type is dict
         else {
-
+            content = JSON.stringify(props.value);
         }
 
         const handleClick = event => {

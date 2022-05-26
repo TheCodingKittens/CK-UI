@@ -78,11 +78,12 @@ const handleNodeRender = (e, theme, onVarsClick) => {
         optionsContainer: css`
           box-sizing: border-box;
           position: absolute;
-          left: 100%;
-          top: 0;
+          right: 2px;
+          bottom: 2px;
           color: ${theme.palette.text.secondary};
-          border-left: none;
-          border-top-left-radius: 0;
+          border-bottom: none;
+          border-right: none;
+          border-top-right-radius: 0;
           border-bottom-left-radius: 0;
         `
     };
