@@ -10,7 +10,7 @@ const VarsDialog = props => {
         <Dialog open={props.open} PaperProps={{sx: {background: theme.palette.background.paper}}} onClose={props.onClose}>
             <DialogTitle>Current Variables</DialogTitle>
             <DialogContent>
-                {generateVarChips(props.node ? props.node.data.vars : [])}
+                {generateVarChips(props.node ? props.node.data.variables : [])}
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onClose}>Close</Button>

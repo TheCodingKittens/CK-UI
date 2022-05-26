@@ -185,6 +185,8 @@ const handleNodeRender = (e, theme, onVarsClick) => {
 };
 
 const generateVarChips = (vars) => {
+    if (!vars) return [];
+
     return vars.map(v =>
         <VarChip
             name={v.var_name}
