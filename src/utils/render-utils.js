@@ -208,7 +208,7 @@ const generateVarChips = (vars) => {
     return vars.map(v =>
         <VarChip
             name={v.var_name}
-            value={JSON.parse(v.value)}
+            value={v.type === 'general' ? v.value : JSON.parse(v.value)}
             type={v.type}
             key={v.pk}
         />
