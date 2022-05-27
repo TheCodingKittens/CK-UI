@@ -22,6 +22,7 @@ import py from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
 import {getEdgeStyle, handleNodeRender} from "../utils/render-utils";
 import {scrollbar} from "../utils/css-mixins";
 import VarsDialog from "./VarsDialog";
+import EditNodeDialog from "./EditNodeDialog";
 
 SyntaxHighlighter.registerLanguage('python', py);
 
@@ -40,7 +41,6 @@ const CodeDisplay = props => {
     const [layoutHeight, setLayoutHeight] = useState('100%');
     const [editNode, setEditNode] = useState(null);
     const [detailsNode, setDetailsNode] = useState(null);
-    const [newCommand, setNewCommand] = useState('');
     const [openWrapperMenu, setOpenWrapperMenu] = useState(false);
     const [wrapperMenuAnchor, setWrapperMenuAnchor] = useState(null);
     const [menuNode, setMenuNode] = useState(null);
@@ -67,16 +67,14 @@ const CodeDisplay = props => {
 
     const handleNodeClick = (node) => {
         console.log(node);
-        setNewCommand(node.data.command);
         setEditNode(node);
     };
 
-    const handleEditClose = (save) => {
+    const handleEditClose = (save, newCommand) => {
         if (save && props.onEdit) {
             props.onEdit(editNode, newCommand);
         }
         setEditNode(null);
-        setNewCommand(null);
     };
 
     const handleLayoutChange = (layout) => {
@@ -151,28 +149,11 @@ const CodeDisplay = props => {
                     }}
             />
             <Box id="code-scroller"/>
-            <Dialog
-                open={!!editNode} onClose={() => handleEditClose()}
-                PaperProps={{sx: {background: theme.palette.background.paper}}}
-            >
-                <DialogTitle>
-                    Edit existing node
-                </DialogTitle>
-                <DialogContent>
-                    <Paper variant="outlined" sx={{overflow: "hidden"}}>
-                        <CodeEditor
-                            language="python"
-                            style={{background: theme.palette.background.default}}
-                            value={newCommand}
-                            onChange={e => setNewCommand(e.target.value)}
-                        />
-                    </Paper>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => handleEditClose(false)}>Cancel</Button>
-                    <Button onClick={() => handleEditClose(true)}>Save</Button>
-                </DialogActions>
-            </Dialog>
+            <EditNodeDialog
+                open={!!editNode}
+                onClose={(s ,c) => handleEditClose(s, c)}
+                node={editNode}
+            />
             <VarsDialog
                 open={!!detailsNode}
                 onClose={() => setDetailsNode(null)}

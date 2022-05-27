@@ -26,6 +26,10 @@ const CodeInput = props => {
         setWaiting(false);
     };
 
+    const handleChange = e => {
+        setCurrentInput(e.target.value);
+    };
+
     return (
         <Paper variant="outlined" sx={{
             display: "flex",
@@ -37,7 +41,7 @@ const CodeInput = props => {
                 placeholder="Enter your code here..."
                 style={{flexGrow: "1", background: theme.palette.background.default}}
                 value={currentInput}
-                onChange={e => setCurrentInput(e.target.value)}
+                onChange={e => handleChange(e)}
                 disabled={waiting}
                 onKeyDown={e => {
                     if (e.ctrlKey && e.code === 'Enter') {
@@ -48,7 +52,7 @@ const CodeInput = props => {
                 }}
             />
             <IconButton
-                disabled={currentInput.length < 1}
+                disabled={currentInput.trim().length < 1}
                 onClick={() => sendCurrentCode()}
             >
                 <Icon>send</Icon>
