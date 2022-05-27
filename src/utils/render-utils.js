@@ -101,6 +101,8 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
                 return "while true:";
             case "For.body":
                 return "for each iteration:";
+            case "Func.body":
+                return "when called, do:";
             default:
                 return "";
         }
@@ -115,6 +117,7 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
         case "If.test":
         case "While.test":
         case "For.test":
+        case "Func.head":
             content = (
                 <SyntaxHighlighter
                     language="python"
@@ -133,6 +136,7 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
         case "If.else":
         case "While.body":
         case "For.body":
+        case "Func.body":
             content = (
                 <Box sx={styles.nodeHeader}>
                     <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
