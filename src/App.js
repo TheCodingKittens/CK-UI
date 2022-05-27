@@ -89,7 +89,7 @@ const App = () => {
             }
         }
         setLoading(false);
-        document.getElementById('code-input').focus();
+        setTimeout(() => document.getElementById('code-input').focus(), 200);
         return result;
     };
 
@@ -97,6 +97,7 @@ const App = () => {
         setLoading(true);
         lastAction = 'delete';
         lastInput = node.data.command;
+        console.log(node);
         try {
             let res = await api.delete(`/command/${node.id}`, {
                 data: {

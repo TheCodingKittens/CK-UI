@@ -17,7 +17,8 @@ const parseCommandsToNodes = (commands, theme) => {
                 ], // top right, bottom, left
                 data: {
                     output: wrapper.output,
-                    variables: wrapper.variables
+                    variables: wrapper.variables,
+                    command: atob(wrapper.command._decoded_bytes)
                 }
             };
             parsed.push(wrapperNode);

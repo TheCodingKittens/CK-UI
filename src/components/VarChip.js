@@ -70,7 +70,7 @@ const VarChip = props => {
         `,
         listEntryContainer: css`
           margin: 0.1em 0.2em;
-          max-width: 5em;
+          max-width: 10em;
           overflow: hidden;
           text-overflow: ellipsis;
         `,
@@ -82,6 +82,16 @@ const VarChip = props => {
     };
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    const getDictString = (dict) => {
+        let dictLength = Object.keys(dict).length;
+        if (dictLength === 1){
+            return `dictionary of 1 entry`;
+        }
+        else {
+            return `dictionary of ${dictLength} entries`;
+        }
+    }
+
     let content = props.value;
     if (props.type !== 'general') {
         if (props.type === 'list') {
@@ -89,9 +99,16 @@ const VarChip = props => {
 
             let i = 0;
             for (let entry of content.slice(0, 5)) {
+                let text = entry;
+                if (Array.isArray(entry)) {
+                    text = `<list of ${entry.length}>`;
+                }
+                else if (typeof entry === 'object') {
+                    text = `<dictionary>`;
+                }
                 elements.push(
                     <Box sx={styles.listEntryContainer} key={`var-${i++}`}>
-                        {entry}
+                        {text}
                     </Box>
                 );
                 elements.push(
@@ -114,13 +131,7 @@ const VarChip = props => {
         // type is dict
         else {
             //content = JSON.stringify(props.value);
-            let dictLength = Object.keys(props.value).length;
-            if (dictLength === 1){
-                content = `dictionary of 1 entry`;
-            }
-            else {
-                content = `dictionary of ${Object.keys(props.value).length} entries`;
-            }
+            content = getDictString(props.value);
 
         }
 
