@@ -28,6 +28,7 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
           align-self: flex-start;
           width: 100%;
           cursor: default;
+          height: 25px;
         `,
         outputContainer: css`
           height: calc(100% - 4px);
@@ -117,7 +118,6 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
         case "If.test":
         case "While.test":
         case "For.test":
-        case "Func.head":
             content = (
                 <SyntaxHighlighter
                     language="python"
@@ -136,12 +136,32 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
         case "If.else":
         case "While.body":
         case "For.body":
-        case "Func.body":
             content = (
                 <Box sx={styles.nodeHeader}>
                     <Typography color="textSecondary" style={{marginLeft: '0.5em'}}>
                         {getHeaderText(e.node.type)}
                     </Typography>
+                    <Divider/>
+                </Box>
+            );
+            break;
+
+        case "function":
+            content = (
+                <Box sx={styles.nodeHeader}>
+                    <SyntaxHighlighter
+                        language="python"
+                        style={oneDark}
+                        customStyle={{
+                            backgroundColor: 'transparent',
+                            padding: '2.5px 0',
+                            margin: 0,
+                            marginLeft: '0.5em'
+                        }}
+                        wrapLongLines
+                    >
+                        {e.node.data.command}
+                    </SyntaxHighlighter>
                     <Divider/>
                 </Box>
             );
