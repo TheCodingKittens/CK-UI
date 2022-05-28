@@ -5,7 +5,7 @@ import {
     Box,
     Card,
     CardContent, CircularProgress,
-    Divider,
+    Divider, Icon, IconButton, Tooltip,
     Typography,
     useTheme
 } from "@mui/material";
@@ -53,6 +53,11 @@ const App = () => {
           border: none;
           flex-shrink: 0;
         `,
+        appHeader: css`
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        `
     };
     const [commands, setCommands] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -97,7 +102,6 @@ const App = () => {
         setLoading(true);
         lastAction = 'delete';
         lastInput = node.data.command;
-        console.log(node);
         try {
             let res = await api.delete(`/command/${node.id}`, {
                 data: {
@@ -108,7 +112,7 @@ const App = () => {
                 setCommands(res.data);
             }
         } catch (error) {
-            console.log("failed to send command!", error);
+            console.log("failed to delete node!", error);
             if (error.response && error.response.data.detail) {
                 setError(error.response.data.detail);
             }
@@ -130,7 +134,28 @@ const App = () => {
                 setCommands(res.data);
             }
         } catch (error) {
-            console.log("failed to send command!", error);
+            console.log("failed to edit node!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
+    };
+
+    const swapNodes = async (node1, node2) => {
+        setLoading(true);
+        lastAction = 'swap';
+        lastInput = node1.data.command;
+        try {
+            let res = await api.put(`/command/${node1.id}/swap`, {
+                token: getCurrentToken(),
+                "swapping_wrapper_id": node2.id
+            });
+            if (res.status === 200) {
+                setCommands(res.data);
+            }
+        } catch (error) {
+            console.log("failed to swap nodes!", error);
             if (error.response && error.response.data.detail) {
                 setError(error.response.data.detail);
             }
@@ -141,10 +166,17 @@ const App = () => {
     return (
         <Box sx={styles.appContainer}>
             <Card variant="outlined" sx={styles.mainCard} id="display-card">
-                <CardContent id="display-header">
+                <CardContent id="display-header" sx={styles.appHeader}>
                     <Typography variant="h2" sx={styles.appTitle}>
                         codeMeow.
                     </Typography>
+                    <Box>
+                        <Tooltip title="Download current graph as python code">
+                            <IconButton>
+                                <Icon>receipt</Icon>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </CardContent>
                 <Divider/>
                 <CardContent sx={styles.mainCardContent} id="code-display">
@@ -152,6 +184,7 @@ const App = () => {
                         commands={commands}
                         onEdit={editCommand}
                         onDelete={deleteNode}
+                        onSwap={swapNodes}
                     />
                 </CardContent>
                 <Backdrop open={loading}>

@@ -22,6 +22,9 @@ const getTitle = lastAction => {
         case 'delete':
             return 'Invalid Deletion!';
 
+        case 'swap':
+            return 'Invalid Swap!';
+
         default:
             return 'Invalid Input!';
     }
@@ -35,6 +38,9 @@ const getDescription = lastAction => {
         case 'delete':
             return 'By deleting this node, new errors in this node or further down the graph will be produced!';
 
+        case 'swap':
+            return 'By deleting these nodes, new errors will be produced!';
+
         default:
             return 'The input you supplied produced an error!';
     }
@@ -47,6 +53,9 @@ const getInputCaption = lastAction => {
 
         case 'edit':
             return 'your edit:';
+
+        case 'swap':
+            return 'swapped node:';
 
         default:
             return 'your input:';

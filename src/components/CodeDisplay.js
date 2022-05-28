@@ -23,6 +23,7 @@ import {getEdgeStyle, handleNodeRender} from "../utils/render-utils";
 import {scrollbar} from "../utils/css-mixins";
 import VarsDialog from "./VarsDialog";
 import EditNodeDialog from "./EditNodeDialog";
+import RearrangeDialog from "./RearrangeDialog";
 
 SyntaxHighlighter.registerLanguage('python', py);
 
@@ -44,6 +45,7 @@ const CodeDisplay = props => {
     const [openWrapperMenu, setOpenWrapperMenu] = useState(false);
     const [wrapperMenuAnchor, setWrapperMenuAnchor] = useState(null);
     const [menuNode, setMenuNode] = useState(null);
+    const [rearrNode, setRearrNode] = useState(null);
 
     const nodes = parseCommandsToNodes(props.commands, theme);
     let edges = parseEdges(props.commands);
@@ -102,6 +104,14 @@ const CodeDisplay = props => {
 
     const handleRearrangeClick = () => {
         if (!menuNode) return;
+        setRearrNode(menuNode);
+    };
+
+    const handleRearrangeClose = (success, node) => {
+        if (success && rearrNode && node && props.onSwap) {
+            props.onSwap(rearrNode, node);
+        }
+        setRearrNode(null);
     };
 
     return (
@@ -159,13 +169,19 @@ const CodeDisplay = props => {
                 onClose={() => setDetailsNode(null)}
                 node={detailsNode}
             />
+            <RearrangeDialog
+                open={!!rearrNode}
+                editNode={rearrNode}
+                nodes={nodes}
+                onClose={(s, n) => handleRearrangeClose(s, n)}
+            />
             <Menu
                 anchorEl={wrapperMenuAnchor}
                 open={openWrapperMenu}
                 onClose={() => setOpenWrapperMenu(false)}
                 onClick={() => setOpenWrapperMenu(false)}
             >
-                <MenuItem onClick={handleRearrangeClick} disabled>
+                <MenuItem onClick={handleRearrangeClick} disabled={!props.commands || props.commands.length < 2}>
                     <ListItemIcon><Icon>unfold_more</Icon></ListItemIcon>
                     <ListItemText>Rearrange nodes</ListItemText>
                 </MenuItem>
