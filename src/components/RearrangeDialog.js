@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {
     Box,
@@ -60,6 +60,10 @@ const RearrangeDialog = props => {
         `
     }
     const [swapNode, setSwapNode] = useState(null);
+
+    useEffect(() => {
+        if (props.open) setSwapNode(null);
+    }, [props.open])
 
     const handleClose = success => {
         if (props.onClose) props.onClose(success, swapNode);
