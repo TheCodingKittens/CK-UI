@@ -50,6 +50,7 @@ const handleNodeRender = (e, theme, onVarsClick, onMoreClick, onNodeClick) => {
           box-sizing: border-box;
           white-space: pre;
           overflow: auto;
+          height: 100%;
           ${scrollbar(theme)}
         `,
         varsContainer: css`
