@@ -83,6 +83,7 @@ const CodeDisplay = props => {
         if (layout.height !== layoutHeight) {
             setLayoutHeight(layout.height);
             document.getElementById('code-scroller').scrollIntoView();
+            getDimensions();
         }
     };
 
