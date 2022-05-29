@@ -1,16 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {css} from "@emotion/react";
 import {
+    Backdrop,
     Box,
     Card,
-    CardContent,
-    Divider,
+    CardContent, CircularProgress,
+    Divider, Icon, IconButton, Tooltip,
     Typography,
     useTheme
 } from "@mui/material";
 import CodeDisplay from "./components/CodeDisplay";
 import CodeInput from "./components/CodeInput";
+import {api, getCurrentToken} from "./utils/api";
+import ErrorDialog from "./components/ErrorDialog";
 
+// this does not need to update any states
+let lastInput = '';
+let lastAction = 'new';
 
 const App = () => {
     const theme = useTheme();
@@ -34,29 +40,167 @@ const App = () => {
         mainCard: css`
           width: 80%;
           flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+        `,
+        mainCardContent: css`
+          flex-grow: 1;
+          padding: 0
         `,
         inputCard: css`
           margin-top: 1em;
           width: 80%;
           border: none;
+          flex-shrink: 0;
         `,
+        appHeader: css`
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        `
     };
+    const [commands, setCommands] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            let res = await api.get('/history/' + getCurrentToken());
+            if (res.status === 200) {
+                setCommands(res.data.commands);
+                setLoading(false);
+            }
+        })();
+    }, []);
+
+    const sendCommand = async input => {
+        lastInput = input;
+        setLoading(true);
+        lastAction = 'new';
+        let result = true;
+        try {
+            let res = await api.post('/command', {
+                command: btoa(input),
+                token: getCurrentToken()
+            });
+            if (res.status === 200) { // TODO: update to 201
+                setCommands(res.data);
+            }
+        } catch (error) {
+            result = false;
+            console.log("failed to send command!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
+        setTimeout(() => document.getElementById('code-input').focus(), 200);
+        return result;
+    };
+
+    const deleteNode = async node => {
+        setLoading(true);
+        lastAction = 'delete';
+        lastInput = node.data.command;
+        try {
+            let res = await api.delete(`/command/${node.id}`, {
+                data: {
+                    token: getCurrentToken()
+                }
+            });
+            if (res.status === 200) {
+                setCommands(res.data);
+            }
+        } catch (error) {
+            console.log("failed to delete node!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
+    };
+
+    const editCommand = async (node, newCommand) => {
+        setLoading(true);
+        lastAction = 'edit';
+        lastInput = newCommand;
+        try {
+            let res = await api.put(`/command/${node.data.wrapper_id}`, {
+                new_command: btoa(newCommand),
+                token: getCurrentToken(),
+                node_id: node.id
+            });
+            if (res.status === 200) {
+                setCommands(res.data);
+            }
+        } catch (error) {
+            console.log("failed to edit node!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
+    };
+
+    const swapNodes = async (node1, node2) => {
+        setLoading(true);
+        lastAction = 'swap';
+        lastInput = node1.data.command;
+        try {
+            let res = await api.put(`/command/${node1.id}/swap`, {
+                token: getCurrentToken(),
+                "swapping_wrapper_id": node2.id
+            });
+            if (res.status === 200) {
+                setCommands(res.data);
+            }
+        } catch (error) {
+            console.log("failed to swap nodes!", error);
+            if (error.response && error.response.data.detail) {
+                setError(error.response.data.detail);
+            }
+        }
+        setLoading(false);
+    };
+
     return (
         <Box sx={styles.appContainer}>
-            <Card variant="outlined" sx={styles.mainCard}>
-                <CardContent>
+            <Card variant="outlined" sx={styles.mainCard} id="display-card">
+                <CardContent id="display-header" sx={styles.appHeader}>
                     <Typography variant="h2" sx={styles.appTitle}>
                         codeMeow.
                     </Typography>
+                    <Box>
+                        <Tooltip title="Download current graph as python code">
+                            <IconButton>
+                                <Icon>receipt</Icon>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </CardContent>
                 <Divider/>
-                <CardContent>
-                    <CodeDisplay/>
+                <CardContent sx={styles.mainCardContent} id="code-display">
+                    <CodeDisplay
+                        commands={commands}
+                        onEdit={editCommand}
+                        onDelete={deleteNode}
+                        onSwap={swapNodes}
+                    />
                 </CardContent>
+                <Backdrop open={loading}>
+                    <CircularProgress color="primary"/>
+                </Backdrop>
             </Card>
             <Card variant="outlined" sx={styles.inputCard}>
-                <CodeInput/>
+                <CodeInput onSend={i => sendCommand(i)}/>
             </Card>
+            <ErrorDialog
+                input={lastInput}
+                error={error}
+                lastAction={lastAction}
+                open={!!error}
+                onClose={() => setError(null)}
+            />
         </Box>
     );
 };

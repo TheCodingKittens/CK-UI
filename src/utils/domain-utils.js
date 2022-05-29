@@ -17,7 +17,7 @@ const isProduction = () => {
  */
 const getDomain = () => {
     const prodUrl = 'https://ase-fs22-codingkittens-client.herokuapp.com/';
-    const devUrl = 'http://localhost:8080/';
+    const devUrl = 'http://localhost:8000/';
 
     return isProduction() ? prodUrl : devUrl;
 };

@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {Icon, IconButton, InputAdornment, TextField, useTheme} from "@mui/material";
+import {Icon, IconButton, Paper, useTheme} from "@mui/material";
 import {css} from "@emotion/react";
-import {api} from "../utils/api";
+import CodeEditor from '@uiw/react-textarea-code-editor';
 
 const CodeInput = props => {
     const theme = useTheme();
@@ -16,45 +16,53 @@ const CodeInput = props => {
 
     const sendCurrentCode = async () => {
         setWaiting(true);
-        try {
-            const result = await api.post('/command', {command: currentInput});
-            setCurrentInput("");
+        let result = true;
+        if (props.onSend) {
+            result = await props.onSend(currentInput);
         }
-        catch (error) {
-            console.error("Failed to send command to backend!", error);
+        if (result) {
+            setCurrentInput("");
         }
         setWaiting(false);
     };
 
+    const handleChange = e => {
+        setCurrentInput(e.target.value);
+    };
+
     return (
-        <TextField
-            fullWidth multiline
-            value={currentInput}
-            disabled={waiting}
-            onChange={e => setCurrentInput(e.target.value)}
-            onKeyUp={e => {
-                if (e.ctrlKey && e.code === 'Enter') {
-                    sendCurrentCode();
-                    e.preventDefault();
-                }
-                console.log(e.code);
-            }}
-            InputProps={{
-                endAdornment:
-                    <InputAdornment position="end">
-                        <IconButton
-                            disabled={currentInput.length < 1}
-                            onClick={() => sendCurrentCode()}
-                        >
-                            <Icon>send</Icon>
-                        </IconButton>
-                    </InputAdornment>,
-                sx: styles.codeInput
-            }}
-        />
+        <Paper variant="outlined" sx={{
+            display: "flex",
+            background: theme.palette.background.default
+        }}>
+            <CodeEditor
+                id="code-input"
+                language="python"
+                placeholder="Enter your code here..."
+                style={{flexGrow: "1", background: theme.palette.background.default}}
+                value={currentInput}
+                onChange={e => handleChange(e)}
+                disabled={waiting}
+                onKeyDown={e => {
+                    if (e.ctrlKey && e.code === 'Enter') {
+                        sendCurrentCode();
+                        e.preventDefault();
+                    }
+                    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+                }}
+            />
+            <IconButton
+                disabled={currentInput.trim().length < 1}
+                onClick={() => sendCurrentCode()}
+            >
+                <Icon>send</Icon>
+            </IconButton>
+        </Paper>
     );
 };
 
-CodeInput.propTypes = {};
+CodeInput.propTypes = {
+    onSend: PropTypes.func
+};
 
 export default CodeInput;
