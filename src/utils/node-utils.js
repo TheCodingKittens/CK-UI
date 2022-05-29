@@ -138,7 +138,10 @@ const generateSurfaceEdges = commands => {
             let to = commands[i + 1].pk;
             edges.push({
                 id: `${from}-${to}`,
-                from, to
+                from, to,
+                data: {
+                    executed: "True"
+                }
             });
         }
     }
