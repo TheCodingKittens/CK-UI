@@ -16,7 +16,12 @@ const getCurrentToken = () => {
     return token;
 };
 
+const resetToken = () => {
+    sessionStorage.removeItem('token');
+};
+
 export {
     api,
-    getCurrentToken
+    getCurrentToken,
+    resetToken
 };

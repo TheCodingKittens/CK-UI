@@ -11,9 +11,10 @@ import {
 } from "@mui/material";
 import CodeDisplay from "./components/CodeDisplay";
 import CodeInput from "./components/CodeInput";
-import {api, getCurrentToken} from "./utils/api";
+import {api, getCurrentToken, resetToken} from "./utils/api";
 import ErrorDialog from "./components/ErrorDialog";
 import ExportDialog from "./components/ExportDialog";
+import ClearConfirmDialog from "./components/ClearConfirmDialog";
 
 // this does not need to update any states
 let lastInput = '';
@@ -64,15 +65,18 @@ const App = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showExport, setShowExport] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const loadCommands = async () => {
+        let res = await api.get('/history/' + getCurrentToken());
+        if (res.status === 200) {
+            setCommands(res.data.commands);
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
-        (async () => {
-            let res = await api.get('/history/' + getCurrentToken());
-            if (res.status === 200) {
-                setCommands(res.data.commands);
-                setLoading(false);
-            }
-        })();
+        loadCommands();
     }, []);
 
     const sendCommand = async input => {
@@ -165,6 +169,14 @@ const App = () => {
         setLoading(false);
     };
 
+    const handleClearConfirm = (success) => {
+        setShowConfirm(false);
+        if (success) {
+            resetToken();
+            loadCommands();
+        }
+    };
+
     return (
         <Box sx={styles.appContainer}>
             <Card variant="outlined" sx={styles.mainCard} id="display-card">
@@ -173,6 +185,15 @@ const App = () => {
                         codeMeow.
                     </Typography>
                     <Box sx={{display: 'flex'}}>
+                        <Tooltip title="Clear all nodes">
+                            <IconButton
+                                sx={{color: theme.palette.primary.light}}
+                                onClick={() => setShowConfirm(true)} color="primary"
+                            >
+                                <Icon>clear_all</Icon>
+                            </IconButton>
+                        </Tooltip>
+                        <label style={{width: '1em'}}/>
                         <Tooltip title="Visit the Wiki to get help!">
                             <IconButton href="https://github.com/TheCodingKittens/CK-UI/wiki">
                                 <SvgIcon sx={{color: theme.palette.primary.light}}>
@@ -222,6 +243,10 @@ const App = () => {
                 open={showExport}
                 onClose={() => setShowExport(false)}
                 commands={commands}
+            />
+            <ClearConfirmDialog
+                open={showConfirm}
+                onClose={s => handleClearConfirm(s)}
             />
         </Box>
     );
