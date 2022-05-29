@@ -88,7 +88,7 @@ const VarChip = props => {
             return `<dict of 1 entry>`;
         }
         else if (dictLength === 0) {
-            return `<empty dict>`
+            return `<empty dict>`;
         }
         else {
             return `<dict of ${dictLength} entries>`;
