@@ -33,6 +33,7 @@ const CodeInput = props => {
     return (
         <Paper variant="outlined" sx={{
             display: "flex",
+            alignItems: "center",
             background: theme.palette.background.default
         }}>
             <CodeEditor
