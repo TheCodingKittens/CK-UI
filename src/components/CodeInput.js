@@ -27,7 +27,7 @@ const CodeInput = props => {
     };
 
     const handleChange = e => {
-        setCurrentInput(e.target.value);
+        setCurrentInput(e.target.value.replace(/\t/g, '  '));
     };
 
     return (
