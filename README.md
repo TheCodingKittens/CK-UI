@@ -1,5 +1,8 @@
 # CK-UI
-A React Frontend 
+
+To start the frontend for CodeMeow. install all dependencies with `npm install` and then start the application with `npm start`. 
+
+For further information on how to use the our programming layer (e.g., commands and shortcuts), please refer to the [wiki](https://github.com/TheCodingKittens/CK-UI/wiki/CodeMeow.-Wiki) of this project.
 
 [![Build Status](https://app.travis-ci.com/TheCodingKittens/CK-UI.svg?branch=main)](https://app.travis-ci.com/TheCodingKittens/CK-UI)
 [![Coverage Status](https://coveralls.io/repos/github/TheCodingKittens/CK-UI/badge.svg?branch=main)](https://coveralls.io/github/TheCodingKittens/CK-UI?branch=main)
