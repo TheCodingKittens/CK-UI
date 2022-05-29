@@ -1,4 +1,6 @@
-# CK-UI
+# CK-UI - CodeMeow.
+
+Our project CodeMeow. provides users with an application that has an additional visual layer to python's interactive programming console. This way, users are able see the state of their program in a graph representation, as well as the current memory state and possible output.
 
 To start the frontend for CodeMeow. install all dependencies with `npm install` and then start the application with `npm start`. 
 
