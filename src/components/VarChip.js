@@ -85,10 +85,13 @@ const VarChip = props => {
     const getDictString = (dict) => {
         let dictLength = Object.keys(dict).length;
         if (dictLength === 1){
-            return `dictionary of 1 entry`;
+            return `<dict of 1 entry>`;
+        }
+        else if (dictLength === 0) {
+            return `<empty dict>`
         }
         else {
-            return `dictionary of ${dictLength} entries`;
+            return `<dict of ${dictLength} entries>`;
         }
     }
 
@@ -126,13 +129,20 @@ const VarChip = props => {
                 elements.splice(elements.length - 1, 1);
             }
 
+            if (elements.length === 0) {
+                elements.push(
+                    <Box sx={styles.listEntryContainer} key={`var-${i++}`}>
+                        {"<empty list>"}
+                    </Box>
+                );
+            }
+
             content = elements;
         }
         // type is dict
         else {
             //content = JSON.stringify(props.value);
             content = getDictString(props.value);
-
         }
 
         const handleClick = event => {
