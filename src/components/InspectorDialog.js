@@ -3,6 +3,7 @@ import React from "react";
 import {css} from "@emotion/react";
 import Inspector from "react-inspector";
 import {getInspectorTheme} from "../styles/inspector-theme";
+import {scrollbar} from "../utils/css-mixins";
 
 const InspectorDialog = props => {
     // TODO: Manage longer Lists by splitting them into columns or something
@@ -12,6 +13,7 @@ const InspectorDialog = props => {
         dialogContainer: css`
           max-height: 80vh;
           overflow-y: auto;
+          ${scrollbar(theme)}
         `
     };
 
