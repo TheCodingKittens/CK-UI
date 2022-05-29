@@ -150,6 +150,7 @@ const CodeDisplay = props => {
                         <Edge
                             {...edge}
                             style={getEdgeStyle(edge, theme)}
+                            selectable={false}
                         />
                     )}
                     layoutOptions={{
